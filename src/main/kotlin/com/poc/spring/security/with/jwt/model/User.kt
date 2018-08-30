@@ -1,7 +1,11 @@
 package com.poc.spring.security.with.jwt.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.UserDetails
 import java.io.Serializable
+import java.util.stream.Collectors
 import javax.persistence.CollectionTable
 import javax.persistence.Column
 import javax.persistence.ElementCollection
@@ -23,11 +27,35 @@ data class User @JvmOverloads constructor(
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY) val id: Int = 0,
     @field:NotBlank val name: String = "",
     @field:[NotBlank Email] @Column(unique = true) val email: String = "",
-    @field:NotBlank @JsonIgnore val password: String = "",
+    @field:NotBlank @JsonIgnore val passwords: String = "",
     val birthDate: String? = null,
     @JsonIgnore val photo: String? = null,
     val userName: String = email,
     val cpfOrCnpj: String? = null,
     val loggedByFace: Boolean = false,
-    @ElementCollection(fetch = FetchType.EAGER) @CollectionTable(name = "PROFILES") val profiles: Set<Int> = HashSet()
-) : Serializable
+    @ElementCollection(fetch = FetchType.EAGER) @CollectionTable(name = "PROFILES") val profiles: Set<Int> = emptySet()
+) : Serializable, UserDetails{
+
+    fun getProfile() =
+        profiles.map({ x -> UserProfile.toEnum(x) })
+
+    fun addProfiles(profiles: UserProfile) =
+        this.profiles.plus(profiles.cod)
+
+    override fun getPassword() = passwords
+
+    override fun getAuthorities(): Collection<GrantedAuthority> =
+        this.profiles.stream().map({ x -> SimpleGrantedAuthority(x.toString()) })
+            .collect(Collectors.toList<SimpleGrantedAuthority>())
+
+    override fun getUsername() = userName
+
+    override fun isAccountNonExpired() = true
+
+    override fun isAccountNonLocked() = true
+
+    override fun isCredentialsNonExpired() = true
+
+    override fun isEnabled() = true
+
+}

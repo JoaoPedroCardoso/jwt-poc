@@ -16,5 +16,6 @@ data class UserRequest(
     val photo: String? = null,
     val userName: String = email,
     val cpfOrCnpj: String ? = null,
-    val loggedByFace: Boolean = false
+    val loggedByFace: Boolean = false,
+    val profile: String = "CLIENT"
 )

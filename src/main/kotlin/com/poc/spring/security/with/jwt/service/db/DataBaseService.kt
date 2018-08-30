@@ -21,28 +21,30 @@ class DatabaseService {
     fun instantiateTestDataBase() {
 
         val usu1 = User(
-            name = "Leonardo Siqueira", cpfOrCnpj = "123456789", userName = "leocm", password = "123",
-            email = "leo.siqueira@gmail.com", birthDate = "10/10/1990", loggedByFace = true, photo = "${UUID.randomUUID()}"
+            name = "Leonardo Siqueira", cpfOrCnpj = "123456789", userName = "leocm", passwords = "123",
+            email = "leo.siqueira@gmail.com", birthDate = "10/10/1990", loggedByFace = true, photo = "${UUID
+                .randomUUID()}", profiles = hashSetOf(1)
         )
         val usu2 = User(
-            name = "Tester", cpfOrCnpj = "1010101034", userName = "tester@hotmail.com", password = "123",
-            email = "tester@hotmail.com", birthDate = "10/10/1980"
+            name = "Tester", cpfOrCnpj = "1010101034", userName = "tester@hotmail.com", passwords = "123",
+            email = "tester@hotmail.com", birthDate = "10/10/1980", profiles = hashSetOf(1)
         )
         val usu3 = User(
-            name = "Victor Gomes", cpfOrCnpj = "1010101034", userName = "vict", password = "123",
-            email = "vito.gomes@gmail.com", birthDate = "10/10/2000"
+            name = "Victor Gomes", cpfOrCnpj = "1010101034", userName = "vict", passwords = "123",
+            email = "vito.gomes@gmail.com", birthDate = "10/10/2000", profiles = hashSetOf(2)
         )
         val usu4 = User(
             name = "Murillo Ferreira",
             cpfOrCnpj = "1020304034",
             userName = "murillo.ferreira@gmail.com",
-            password = "123",
+            passwords = "123",
             email = "murillo.ferreira@gmail.com",
-            birthDate = "10/10/1975"
+            birthDate = "10/10/1975",
+            profiles = hashSetOf(1)
         )
         val usu5 = User(
-            name = "Zezin da Silva", cpfOrCnpj = "102030009", userName = "zezin.silva@gmail.com", password = "123",
-            email = "zezin.silva@gmail.com", birthDate = "10/10/1960"
+            name = "Zezin da Silva", cpfOrCnpj = "102030009", userName = "zezin.silva@gmail.com", passwords = "123",
+            email = "zezin.silva@gmail.com", birthDate = "10/10/1960", profiles = hashSetOf(1)
         )
 
         userRepository.saveAll(Arrays.asList(usu1, usu2, usu3, usu4,usu5))

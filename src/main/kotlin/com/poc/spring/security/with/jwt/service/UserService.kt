@@ -56,7 +56,7 @@ class UserService @Autowired constructor(
             )) }
         user = user.copy(
             name = request.name.takeIf { it.isNotBlank() } ?: user.name,
-            password = request.password.takeIf { it.isNotBlank() } ?: user.password,
+            passwords = request.password.takeIf { it.isNotBlank() } ?: user.password,
             userName = request.userName.takeIf { !it.isNullOrBlank() && it!!.isNotBlank() } ?: user.userName,
             loggedByFace = request.loggedByFace.takeIf { it != user.loggedByFace} ?: user.loggedByFace,
             photo = request.photo.takeIf { !it.isNullOrBlank() && it!!.isNotBlank() } ?: user.photo,
@@ -67,7 +67,7 @@ class UserService @Autowired constructor(
     }
 
     fun delete(id: Int) {
-        val user = userRepository.findById(id).orElseThrow { throw NotFoundException(
+        userRepository.findById(id).orElseThrow { throw NotFoundException(
             this.messageSource.getMessage(
                 MessageUtils.OBJECT_NOT_FOUND_ID, arrayOf(id),
                 MessageUtils.DEFAULT_LOCALE

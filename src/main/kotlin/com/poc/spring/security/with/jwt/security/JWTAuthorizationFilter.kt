@@ -1,5 +1,8 @@
 package com.poc.spring.security.with.jwt.security
 
+import com.poc.spring.security.with.jwt.infrastruct.exceptions.ForbiddenException
+import com.poc.spring.security.with.jwt.infrastruct.exceptions.InvalidTokenException
+import com.poc.spring.security.with.jwt.infrastruct.exceptions.UnauthorizedException
 import com.poc.spring.security.with.jwt.service.UserDetailsService
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -20,24 +23,30 @@ class JWTAuthorizationFilter(
 ) : BasicAuthenticationFilter(authenticationManager) {
 
     @Throws(IOException::class, ServletException::class)
-    override fun doFilterInternal(request: HttpServletRequest, response: HttpServletResponse, chain: FilterChain) {
-
-        val header = request.getHeader("Authorization")
-        if (header != null && header.startsWith("Bearer ")) {
+    override fun doFilterInternal(
+        request: HttpServletRequest,
+        response: HttpServletResponse,
+        chain: FilterChain
+    ) {
+        val header = request.getHeader("Authorization").orEmpty()
+        if (header.isNotBlank() && header.startsWith("Bearer ")) {
             val auth = getAuthentication(header.substring(7))
-            if (auth != null) {
-                SecurityContextHolder.getContext().authentication = auth
-            }
+            SecurityContextHolder.getContext().authentication = auth
+            chain.doFilter(request, response)
+        }else{
+            throw ForbiddenException("Access forbidden")
         }
-        chain.doFilter(request, response)
     }
 
-    private fun getAuthentication(token: String): UsernamePasswordAuthenticationToken? {
-        if (jwtUtil.tokenValido(token)) {
-            val username = jwtUtil.getUsername(token)
-            val user = userDetailsService.loadUserByUsername(username!!)
-            return UsernamePasswordAuthenticationToken(user, null, user.authorities)
+    private fun getAuthentication(token: String): UsernamePasswordAuthenticationToken =
+        when(jwtUtil.tokenIsValid(token)) {
+            true -> {
+                val username = jwtUtil.getUsername(token)
+                val user = userDetailsService.loadUserByUsername(username)
+                UsernamePasswordAuthenticationToken(user, null, user.authorities)
+            }
+
+            false -> throw InvalidTokenException("Invalid token")
         }
-        return null
-    }
+
 }

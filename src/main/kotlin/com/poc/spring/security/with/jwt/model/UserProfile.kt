@@ -10,7 +10,6 @@ enum class UserProfile constructor(val cod: Int, val value: String) {
     ADMIN(1, "ADMIN"),
     CLIENT(2, "CLIENT");
 
-
     companion object {
 
         fun toEnum(cod: Int): UserProfile? =

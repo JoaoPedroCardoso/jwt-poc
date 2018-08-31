@@ -1,6 +1,7 @@
 package com.poc.spring.security.with.jwt.infrastruct.custom.error
 
 import com.poc.spring.security.with.jwt.infrastruct.exceptions.ForbiddenException
+import com.poc.spring.security.with.jwt.infrastruct.exceptions.InvalidTokenException
 import com.poc.spring.security.with.jwt.infrastruct.exceptions.UnauthorizedException
 import com.poc.spring.security.with.jwt.infrastruct.extension.objectToJson
 import javassist.NotFoundException
@@ -182,4 +183,13 @@ class CustomRestExceptionHandler : ResponseEntityExceptionHandler() {
         )
     }
 
+    @ExceptionHandler( InvalidTokenException::class )
+    fun handleInvalidTokenException(ex: Exception, request: WebRequest): ResponseEntity<Any> {
+        val apiError = ApiError(
+            HttpStatus.FORBIDDEN, ex.localizedMessage, listOf("access unauthorized", ex.toString())
+        )
+        return ResponseEntity(
+            apiError, HttpHeaders(), apiError.status!!
+        )
+    }
 }

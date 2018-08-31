@@ -1,14 +1,15 @@
 package com.poc.spring.security.with.jwt.security
 
+import com.poc.spring.security.with.jwt.infrastruct.exceptions.UnauthorizedException
+import com.poc.spring.security.with.jwt.model.User
 import com.poc.spring.security.with.jwt.service.UserDetailsService
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import java.util.ArrayList
 import org.springframework.security.authentication.AuthenticationProvider
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.stereotype.Component
-
+import java.util.ArrayList
 
 /**
  * Created by JoaoPedroCardoso on 30/08/18
@@ -18,26 +19,20 @@ class CustomAuthenticationProvider(private val userDetailsService: UserDetailsSe
 
     @Throws(AuthenticationException::class)
     override fun authenticate(authentication: Authentication): Authentication? {
-
+        val user = userDetailsService.loadUserByUsername(authentication.name)
         val password = authentication.credentials.toString()
+        val authenticationResponse = UsernamePasswordAuthenticationToken(user, password, ArrayList<GrantedAuthority>())
 
-        return if (shouldAuthenticateAgainstThirdPartySystem()) {
-
-            // use the credentials
-            // and authenticate against the third-party system
-            val user = userDetailsService.loadUserByUsername(authentication.name)
-            UsernamePasswordAuthenticationToken(
-                user, password, ArrayList<GrantedAuthority>()
-            )
-        } else {
-            null
+        return when(authentication.isAuthenticated &&  shouldAuthenticateAgainstThirdPartySystem(user = user,
+            password = password)) {
+            true -> authenticationResponse
+            false -> throw UnauthorizedException("Invalid credentials")
         }
     }
 
-    override fun supports(authentication: Class<*>): Boolean {
-        return authentication == UsernamePasswordAuthenticationToken::class.java
-    }
+    override fun supports(authentication: Class<*>) =
+        authentication == UsernamePasswordAuthenticationToken::class.java
 
-    private fun shouldAuthenticateAgainstThirdPartySystem() =
-            true
+    private fun shouldAuthenticateAgainstThirdPartySystem(user: User, password: String): Boolean = user.password == password
+
 }

@@ -18,8 +18,8 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.web.cors.CorsConfiguration
 import java.util.Arrays
 import com.poc.spring.security.with.jwt.security.CustomAuthenticationProvider
-
-
+import org.springframework.web.cors.CorsConfigurationSource
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 /**
  * Created by JoaoPedroCardoso on 30/08/18
@@ -49,7 +49,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
 
         private val PUBLIC_MATCHERS_POST = arrayOf("/**")
 
-        private val PUBLIC_MATCHERS_DELETE = arrayOf("/rachas**", "/**")
+        private val PUBLIC_MATCHERS_DELETE = arrayOf("/**")
 
         private val PUBLIC_MATCHERS_PUT = arrayOf("/**")
     }
@@ -57,17 +57,16 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
 
-        if (Arrays.asList(*env!!.activeProfiles).contains("test")) {
-            http.headers().frameOptions().disable()
-        }
-
         http.cors().and().csrf().disable()
-        http.authorizeRequests().antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST).permitAll()
-            .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).permitAll().antMatchers(*PUBLIC_MATCHERS).permitAll()
-            .antMatchers(HttpMethod.DELETE, *PUBLIC_MATCHERS_DELETE).permitAll()
-            .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT).permitAll().anyRequest().authenticated()
         http.addFilter(JWTAuthenticationFilter(authenticationManager(), jwtUtil!!))
-        http.addFilter(JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService!!))
+            .addFilter(JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService!!))
+            .authorizeRequests()
+            .antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST).permitAll()
+            .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).permitAll()
+            .antMatchers(HttpMethod.DELETE, *PUBLIC_MATCHERS_DELETE).permitAll()
+            .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT).permitAll()
+            .antMatchers(HttpMethod.PATCH, "*/**").permitAll()
+
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
     }
 
@@ -77,13 +76,13 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         auth.userDetailsService<org.springframework.security.core.userdetails.UserDetailsService>(userDetailsService)
     }
 
-    /*
-	 * @Bean CorsConfigurationSource corsConfigurationSource() { final
-	 * UrlBasedCorsConfigurationSource source = new
-	 * UrlBasedCorsConfigurationSource(); source.registerCorsConfiguration("/**",
-	 * new CorsConfiguration().applyPermitDefaultValues()); return source; }
-	 */
-*/
+    @Bean
+    internal fun corsConfigurationSource(): CorsConfigurationSource {
+        val source = UrlBasedCorsConfigurationSource()
+        source.registerCorsConfiguration("/**", CorsConfiguration().applyPermitDefaultValues())
+        return source
+    }
+
 	@Bean
     internal fun corsConfiguration() : CorsConfiguration {
         val cors = CorsConfiguration()
@@ -91,7 +90,7 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
         cors.addAllowedMethod("*")
         cors.addAllowedHeader("*")
         cors.setAllowCredentials(true)
-        cors.setMaxAge(3600L)
+        cors.setMaxAge(1800L)
         return cors
     }
 

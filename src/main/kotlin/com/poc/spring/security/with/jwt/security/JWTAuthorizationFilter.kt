@@ -1,9 +1,9 @@
 package com.poc.spring.security.with.jwt.security
 
-import com.poc.spring.security.with.jwt.infrastruct.exceptions.ForbiddenException
 import com.poc.spring.security.with.jwt.infrastruct.exceptions.InvalidTokenException
-import com.poc.spring.security.with.jwt.infrastruct.exceptions.UnauthorizedException
+import com.poc.spring.security.with.jwt.infrastruct.utils.MessageUtils
 import com.poc.spring.security.with.jwt.service.UserDetailsService
+import org.springframework.context.MessageSource
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
@@ -18,8 +18,10 @@ import javax.servlet.http.HttpServletResponse
  * Created by JoaoPedroCardoso on 30/08/18
  */
 class JWTAuthorizationFilter(
-    authenticationManager: AuthenticationManager, private val jwtUtil: JWTUtil,
-    private val userDetailsService: UserDetailsService
+    authenticationManager: AuthenticationManager,
+    private val jwtUtil: JWTUtil,
+    private val userDetailsService: UserDetailsService,
+    private val messageSource: MessageSource
 ) : BasicAuthenticationFilter(authenticationManager) {
 
     @Throws(IOException::class, ServletException::class)
@@ -46,7 +48,11 @@ class JWTAuthorizationFilter(
                 UsernamePasswordAuthenticationToken(user, null, user.authorities)
             }
 
-            false -> throw InvalidTokenException("Invalid token")
+            false -> throw InvalidTokenException(
+                this.messageSource.getMessage(
+                MessageUtils.INVALID_TOKEN, null,
+                MessageUtils.DEFAULT_LOCALE
+            ))
         }
 
 }

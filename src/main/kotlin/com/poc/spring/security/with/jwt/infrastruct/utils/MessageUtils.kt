@@ -25,47 +25,24 @@ open class MessageUtils {
         val DEFAULT_ENCODING = "UTF-8"
 
         /**
-         * Messages gerica
+         * Messages generic
          */
         val OBJECT_NOT_FOUND_ID = "object.not.found.id"
-        val OBJECT_NOT_WORK = "object.not.work"
-
-        /**
-         * Messages of block
-         */
-        val BLOCK_NOT_FOUND_ID = "block.not.found.id"
-        val BLOCK_NOT_FOUND_NAME = "block.not.found.name"
-        val SAVE_ADDRESS_NULL = "save.block.with.address.null"
-        val IMPOSSIBLE_DELETE_BLOCK_HAS_HISTORY = "block.delete.has.history"
-
-        /**
-         * Messages of Address
-         */
-        val IMPOSSIBLE_SAVE_ADDRESS_WITHOUT_COORDINATE = "address.save.without.coordinate"
-        val IMPOSSIBLE_DELETE_ADDRESS_HAS_HISTORY = "address.delete.has.history"
-
-        /**
-         * Messages of Coordinate
-         */
-        val IMPOSSIBLE_DELETE_CORDINATE_HAS_HISTORY = "coordinate.delete.has.history"
-
-        /**
-         * Messages of Schedule
-         */
-        val IMPOSSIBLE_DELETE_SCHEDULE_HAS_HISTORY = "schedule.delete.has.history"
-
-        /**
-         * Messages of Streak
-         */
-        val IMPOSSIBLE_DELETE_STREAK_HAS_HISTORY = "streak.delete.has.history"
 
         /**
          * Messages of User
          */
-        val IMPOSSIBLE_DELETE_USER_HAS_HISTORY = "user.delete.has.history"
-        val EMAIL_NOT_FOUND = "email.not.not_found"
+        val EMAIL_NOT_FOUND = "email.not.found"
+
+        val USER_NAME_NOT_FOUND = "user.name.not.found"
+
+        /**
+         * Messages of Login
+         */
         val USER_NAME_OR_EMAIL_NOT_FOUND = "user.email.not.found"
-        val USER_NAME_NOT_FOUND = "user.name.not.not_found"
+        val INVALID_TOKEN = "invalid.token"
+        val INVALID_CREDENTIAL = "invalid.credential"
+        val INVALID_PARSE_CREDENTIAL_REQUEST = "invalid.parse.credential.request"
 
         /**
          * Configuration of variable languages

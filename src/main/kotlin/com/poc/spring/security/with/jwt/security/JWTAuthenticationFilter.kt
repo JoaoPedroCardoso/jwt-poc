@@ -2,7 +2,9 @@ package com.poc.spring.security.with.jwt.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.poc.spring.security.with.jwt.api.request.CredentialRequest
+import com.poc.spring.security.with.jwt.infrastruct.utils.MessageUtils
 import com.poc.spring.security.with.jwt.model.User
+import org.springframework.context.MessageSource
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.authentication.AuthenticationManager
@@ -21,7 +23,9 @@ import javax.servlet.http.HttpServletResponse
  * Created by JoaoPedroCardoso on 30/08/18
  */
 class JWTAuthenticationFilter(private var authenticationManagers: AuthenticationManager,
-                              private val jwtUtil: JWTUtil) : UsernamePasswordAuthenticationFilter() {
+                              private val jwtUtil: JWTUtil,
+                              private val messageSource: MessageSource
+) : UsernamePasswordAuthenticationFilter() {
 
     @Throws(AuthenticationException::class)
     override fun attemptAuthentication(
@@ -29,7 +33,10 @@ class JWTAuthenticationFilter(private var authenticationManagers: Authentication
         response: HttpServletResponse
     ) : Authentication {
         val credentials = ObjectMapper().readValue(request.inputStream, CredentialRequest::class.java) ?: throw
-        RuntimeException("Can not parse the request to CredentialRequest.class")
+        RuntimeException(this.messageSource.getMessage(
+            MessageUtils.INVALID_PARSE_CREDENTIAL_REQUEST, null,
+            MessageUtils.DEFAULT_LOCALE
+        ))
 
         val authToken = UsernamePasswordAuthenticationToken(
             credentials.username,

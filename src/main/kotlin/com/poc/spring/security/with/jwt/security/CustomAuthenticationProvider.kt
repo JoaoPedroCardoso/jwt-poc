@@ -1,8 +1,10 @@
 package com.poc.spring.security.with.jwt.security
 
 import com.poc.spring.security.with.jwt.infrastruct.exceptions.UnauthorizedException
+import com.poc.spring.security.with.jwt.infrastruct.utils.MessageUtils
 import com.poc.spring.security.with.jwt.model.User
 import com.poc.spring.security.with.jwt.service.UserDetailsService
+import org.springframework.context.MessageSource
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -15,7 +17,9 @@ import java.util.ArrayList
  * Created by JoaoPedroCardoso on 30/08/18
  */
 @Component
-class CustomAuthenticationProvider(private val userDetailsService: UserDetailsService) : AuthenticationProvider {
+class CustomAuthenticationProvider(private val userDetailsService: UserDetailsService,
+                                   private val messageSource: MessageSource
+) : AuthenticationProvider {
 
     @Throws(AuthenticationException::class)
     override fun authenticate(authentication: Authentication): Authentication? {
@@ -26,7 +30,11 @@ class CustomAuthenticationProvider(private val userDetailsService: UserDetailsSe
         return when(authentication.isAuthenticated &&  shouldAuthenticateAgainstThirdPartySystem(user = user,
             password = password)) {
             true -> authenticationResponse
-            false -> throw UnauthorizedException("Invalid credentials")
+            false -> throw UnauthorizedException(
+                this.messageSource.getMessage(
+                MessageUtils.INVALID_CREDENTIAL, null,
+                MessageUtils.DEFAULT_LOCALE
+            ))
         }
     }
 

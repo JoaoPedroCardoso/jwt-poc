@@ -1,10 +1,13 @@
 package com.poc.spring.security.with.jwt.security
 
 import com.poc.spring.security.with.jwt.infrastruct.exceptions.InvalidTokenException
+import com.poc.spring.security.with.jwt.infrastruct.utils.MessageUtils
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.MessageSource
 import org.springframework.stereotype.Component
 import java.text.ParseException
 import java.util.Date
@@ -20,6 +23,9 @@ class JWTUtil {
 
     @Value("\${jwt.expiration}")
     private val expiration: Long = 0L
+
+    @Autowired
+    lateinit var messageSource: MessageSource
 
     fun generateToken(username: String): String =
         Jwts.builder().setSubject(username).setExpiration(Date(System.currentTimeMillis() + expiration))
@@ -49,7 +55,11 @@ class JWTUtil {
         try {
             return Jwts.parser().setSigningKey(secret.toByteArray()).parseClaimsJws(token).body
         } catch (e: Exception) {
-            throw throw InvalidTokenException("Invalid token")
+            throw throw InvalidTokenException(
+                this.messageSource.getMessage(
+                MessageUtils.INVALID_TOKEN, null,
+                MessageUtils.DEFAULT_LOCALE
+            ))
         }
     }
 

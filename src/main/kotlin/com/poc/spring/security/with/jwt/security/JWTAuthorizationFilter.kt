@@ -34,7 +34,7 @@ class JWTAuthorizationFilter(
             SecurityContextHolder.getContext().authentication = auth
             chain.doFilter(request, response)
         }else{
-            throw ForbiddenException("Access forbidden")
+            chain.doFilter(request, response)
         }
     }
 

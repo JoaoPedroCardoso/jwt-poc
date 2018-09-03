@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.MissingServletRequestParameterException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.context.request.WebRequest
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
 import org.springframework.web.servlet.NoHandlerFoundException
@@ -164,6 +165,7 @@ class CustomRestExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler( ForbiddenException::class )
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     fun handleForbiddenException(ex: Exception, request: WebRequest): ResponseEntity<Any> {
         val apiError = ApiError(
             HttpStatus.FORBIDDEN, ex.localizedMessage, listOf("access forbidden")
@@ -174,6 +176,7 @@ class CustomRestExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler( UnauthorizedException::class )
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     fun handleUnauthorizedException(ex: Exception, request: WebRequest): ResponseEntity<Any> {
         val apiError = ApiError(
             HttpStatus.UNAUTHORIZED, ex.localizedMessage, listOf("access unauthorized")
@@ -184,9 +187,10 @@ class CustomRestExceptionHandler : ResponseEntityExceptionHandler() {
     }
 
     @ExceptionHandler( InvalidTokenException::class )
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     fun handleInvalidTokenException(ex: Exception, request: WebRequest): ResponseEntity<Any> {
         val apiError = ApiError(
-            HttpStatus.FORBIDDEN, ex.localizedMessage, listOf("access unauthorized", ex.toString())
+            HttpStatus.FORBIDDEN, ex.localizedMessage, listOf("access forbidden", ex.toString())
         )
         return ResponseEntity(
             apiError, HttpHeaders(), apiError.status!!

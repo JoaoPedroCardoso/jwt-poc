@@ -20,6 +20,9 @@ import java.util.Arrays
 import com.poc.spring.security.with.jwt.security.CustomAuthenticationProvider
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+
+
 
 /**
  * Created by JoaoPedroCardoso on 30/08/18
@@ -27,7 +30,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class SecurityConfig : WebSecurityConfigurerAdapter() {
+class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
     @Autowired
     private val userDetailsService: UserDetailsService? = null
@@ -57,17 +60,22 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     @Throws(Exception::class)
     override fun configure(http: HttpSecurity) {
 
-        http.cors().and().csrf().disable()
-        http.addFilter(JWTAuthenticationFilter(authenticationManager(), jwtUtil!!))
-            .addFilter(JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService!!))
-            .authorizeRequests()
-            .antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST).permitAll()
-            .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).permitAll()
-            .antMatchers(HttpMethod.DELETE, *PUBLIC_MATCHERS_DELETE).permitAll()
-            .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT).permitAll()
-            .antMatchers(HttpMethod.PATCH, "*/**").permitAll()
+//            .antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST).permitAll()
+//            .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).permitAll()
+//            .antMatchers(HttpMethod.DELETE, *PUBLIC_MATCHERS_DELETE).permitAll()
+//            .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT).permitAll()
+//            .antMatchers(HttpMethod.PATCH, "/**").permitAll()
 
+        http.csrf().disable()
+        http.cors().configurationSource(corsConfigurationSource())
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+        http.authorizeRequests()
+            .antMatchers("/**").permitAll()
+            .anyRequest().authenticated().and()
+            .addFilterBefore(JWTAuthenticationFilter(authenticationManager(), jwtUtil!!), UsernamePasswordAuthenticationFilter::class.java)
+            .addFilter(JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService!!))
+
     }
 
     @Throws(Exception::class)

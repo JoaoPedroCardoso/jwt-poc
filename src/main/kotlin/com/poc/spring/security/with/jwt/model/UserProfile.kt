@@ -5,15 +5,12 @@ import com.fasterxml.jackson.annotation.JsonCreator
 /**
  * Created by JoaoPedroCardoso on 30/08/18
  */
-enum class UserProfile constructor(val cod: Int, val value: String) {
+enum class UserProfile constructor(val value: String) {
 
-    ADMIN(1, "ADMIN"),
-    CLIENT(2, "CLIENT");
+    ROLE_ADMIN("ADMIN"),
+    ROLE_CLIENT( "CLIENT");
 
     companion object {
-
-        fun toEnum(cod: Int): UserProfile? =
-            UserProfile.values().firstOrNull { it.cod == cod } ?: throw IllegalArgumentException("Id invalido $cod")
 
         @JsonCreator
         @JvmStatic

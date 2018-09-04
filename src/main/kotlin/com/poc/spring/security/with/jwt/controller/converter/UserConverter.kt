@@ -11,5 +11,5 @@ import com.poc.spring.security.with.jwt.model.UserProfile
 fun UserRequest.toModel() = User(
     name = name, cpfOrCnpj = cpfOrCnpj, userName = userName, passwords = password,
     email = email, loggedByFace = loggedByFace, photo = photo, birthDate = birthDate,
-    profiles = hashSetOf(UserProfile.fromString(profile).cod)
+    profiles = hashSetOf(UserProfile.fromString(profile).value)
 )

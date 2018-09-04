@@ -6,6 +6,7 @@ import com.poc.spring.security.with.jwt.security.JWTAuthorizationFilter
 import com.poc.spring.security.with.jwt.security.JWTUtil
 import com.poc.spring.security.with.jwt.service.UserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.MessageSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -38,6 +39,9 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     @Autowired
     private val authProvider: CustomAuthenticationProvider? = null
 
+    @Autowired
+    lateinit var messageSource: MessageSource
+
     companion object {
 
         private val PUBLIC_MATCHERS = arrayOf("/**")
@@ -59,10 +63,14 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         http.authorizeRequests()
-            .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).permitAll()
+            .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).hasRole("ADMIN")
+            .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT).hasRole("ADMIN")
+            .antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST).permitAll()
+            .antMatchers(HttpMethod.DELETE, *PUBLIC_MATCHERS_DELETE).permitAll()
             .anyRequest().authenticated().and()
-            .addFilterBefore(JWTAuthenticationFilter(authenticationManager(), jwtUtil!!), UsernamePasswordAuthenticationFilter::class.java)
-            .addFilter(JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService!!))
+            .addFilterBefore(JWTAuthenticationFilter(authenticationManager(), jwtUtil!!, messageSource),
+                UsernamePasswordAuthenticationFilter::class.java)
+            .addFilter(JWTAuthorizationFilter(authenticationManager(), jwtUtil, userDetailsService!!, messageSource))
 
     }
 

@@ -33,14 +33,16 @@ data class User @JvmOverloads constructor(
     val userName: String = email,
     val cpfOrCnpj: String? = null,
     val loggedByFace: Boolean = false,
-    @ElementCollection(fetch = FetchType.EAGER) @CollectionTable(name = "PROFILES") val profiles: Set<Int> = emptySet()
+    @JsonIgnore @ElementCollection(fetch = FetchType.EAGER) @CollectionTable(name = "PROFILES") val profiles:
+    Set<String> =
+        emptySet()
 ) : Serializable, UserDetails{
 
     fun getProfile() =
-        profiles.map({ x -> UserProfile.toEnum(x) })
+        profiles.map({ x -> UserProfile.fromString(x).value })
 
     fun addProfiles(profiles: UserProfile) =
-        this.profiles.plus(profiles.cod)
+        this.profiles.plus(profiles)
 
     override fun getPassword() = passwords
 

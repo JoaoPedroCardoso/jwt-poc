@@ -1,4 +1,4 @@
-# spring.security.jwt
+# @name@
 
 ## Welcome to Jwt poc!
 

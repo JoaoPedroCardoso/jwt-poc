@@ -8,8 +8,8 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>spring.security.with.jwt</name>
-	<description>Demo project for Spring Boot</description>
+	<name>spring.security.jwt</name>
+	<description>Demo project for Spring Security JWT</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -23,6 +23,14 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
 		<kotlin.version>1.2.51</kotlin.version>
+		<jackson.module.kotlin.version>2.9.6</jackson.module.kotlin.version>
+		<jwt.version>0.7.0</jwt.version>
+		<spring.security.jwt.version>1.0.9.RELEASE</spring.security.jwt.version>
+		<hibernate.jpa.version>1.0.2.Final</hibernate.jpa.version>
+		<javax.validation.version>2.0.1.Final</javax.validation.version>
+
+		<!-- Plugin versions -->
+		<templating.plugin.version>1.0.0</templating.plugin.version>
 	</properties>
 
 	<dependencies>
@@ -40,13 +48,13 @@
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt</artifactId>
-			<version>0.7.0</version>
+			<version>${jwt.version}</version>
 		</dependency>
 
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-jwt</artifactId>
-			<version>1.0.9.RELEASE</version>
+			<version>${spring.security.jwt.version}</version>
         </dependency>
         <!-- Security -->
 
@@ -86,19 +94,19 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-kotlin</artifactId>
-            <version>2.9.6</version>
+            <version>${jackson.module.kotlin.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>
-            <version>1.0.2.Final</version>
+            <version>${hibernate.jpa.version}</version>
         </dependency>
 
         <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
+            <version>${javax.validation.version}</version>
         </dependency>
     </dependencies>
 
@@ -129,8 +137,34 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+
+			<!-- The templating maven plugin handles copying files from a source to a given output directory. -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>templating-maven-plugin</artifactId>
+				<configuration>
+					<sourceDirectory>src/main/resources/templates</sourceDirectory>
+					<outputDirectory>${project.basedir}</outputDirectory>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>filter-sources</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>templating-maven-plugin</artifactId>
+					<version>${templating.plugin.version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
-
-
 </project>

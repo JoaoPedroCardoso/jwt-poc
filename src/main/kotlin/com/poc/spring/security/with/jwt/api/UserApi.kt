@@ -24,7 +24,7 @@ import javax.validation.Valid
 interface UserApi {
 
     companion object {
-        const val USER_BASE_URL = "/user"
+        const val USER_BASE_URL = "/api/user"
         const val SEARCH_AND_UPDATE_USER_BY_ID_URL = "$USER_BASE_URL/{id}"
         const val SEARCH_USER_BY_NAME_URL = "$USER_BASE_URL/userName/{userName}"
     }

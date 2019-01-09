@@ -46,7 +46,9 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
         private val PUBLIC_MATCHERS = arrayOf("/**")
 
-        private val PUBLIC_MATCHERS_GET = arrayOf("/**")
+        private val PUBLIC_MATCHERS_GET = arrayOf("/api/user/{id}", "/api/user/userName/{userName}")
+
+        private val PRIVATE_MATCHERS_GET = arrayOf("/api/user")
 
         private val PUBLIC_SWAGGER_MATCHERS = arrayOf("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**", "/swagger-resources/configuration/ui", "/swagge‌​r-ui.html", "/swagger-resources/configuration/security")
 
@@ -66,10 +68,11 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
         http.authorizeRequests()
             .antMatchers(*PUBLIC_SWAGGER_MATCHERS).permitAll()
-            .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).hasRole("ADMIN")
+            .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).hasRole("CLIENT")
+            .antMatchers(HttpMethod.GET, *PRIVATE_MATCHERS_GET).hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT).hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST).permitAll()
-            .antMatchers(HttpMethod.DELETE, *PUBLIC_MATCHERS_DELETE).permitAll()
+            .antMatchers(HttpMethod.DELETE, *PUBLIC_MATCHERS_DELETE).hasRole("ADMIN")
             .anyRequest().authenticated().and()
             .addFilterBefore(JWTAuthenticationFilter(authenticationManager(), jwtUtil!!, messageSource),
                 UsernamePasswordAuthenticationFilter::class.java)

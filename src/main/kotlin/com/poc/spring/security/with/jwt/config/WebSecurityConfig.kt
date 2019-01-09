@@ -48,6 +48,8 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
 
         private val PUBLIC_MATCHERS_GET = arrayOf("/**")
 
+        private val PUBLIC_SWAGGER_MATCHERS = arrayOf("/v2/api-docs", "/configuration/ui", "/swagger-resources", "/configuration/security", "/swagger-ui.html", "/webjars/**", "/swagger-resources/configuration/ui", "/swagge‌​r-ui.html", "/swagger-resources/configuration/security")
+
         private val PUBLIC_MATCHERS_POST = arrayOf("/**")
 
         private val PUBLIC_MATCHERS_DELETE = arrayOf("/**")
@@ -63,6 +65,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 
         http.authorizeRequests()
+            .antMatchers(*PUBLIC_SWAGGER_MATCHERS).permitAll()
             .antMatchers(HttpMethod.GET, *PUBLIC_MATCHERS_GET).hasRole("ADMIN")
             .antMatchers(HttpMethod.PUT, *PUBLIC_MATCHERS_PUT).hasRole("ADMIN")
             .antMatchers(HttpMethod.POST, *PUBLIC_MATCHERS_POST).permitAll()

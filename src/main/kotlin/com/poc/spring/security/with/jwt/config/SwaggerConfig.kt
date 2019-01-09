@@ -17,8 +17,8 @@ class SwaggerConfig {
     @Bean
     fun api(): Docket = Docket(DocumentationType.SWAGGER_2)
             .select()
-            .apis(RequestHandlerSelectors.basePackage("com.poc.spring.security.with.jwt.api"))
-            .paths(PathSelectors.ant("/api/*"))
+            .apis(RequestHandlerSelectors.basePackage("com.poc.spring.security.with.jwt"))
+            .paths(PathSelectors.ant("/api/**"))
             .build()
             .apiInfo(apiInfo())
 

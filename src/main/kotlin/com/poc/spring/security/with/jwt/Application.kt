@@ -13,7 +13,6 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 @SpringBootApplication
 @Configuration
-@EnableSwagger2
 open class Application
 
 fun main(args: Array<String>) {

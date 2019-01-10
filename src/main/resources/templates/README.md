@@ -34,3 +34,7 @@ $ mvn clean install.
 - After run the application:
 
 	> http://localhost:8082/swagger-ui.html
+
+## Note
+
+This application is deployed in heroku, please check the environment tab!

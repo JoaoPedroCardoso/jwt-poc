@@ -30,6 +30,11 @@
 		<javax.validation.version>2.0.1.Final</javax.validation.version>
 		<swagger2.version>2.9.2</swagger2.version>
 
+		<!-- About test -->
+		<mockito.version>1.6.0</mockito.version>
+		<mockito.core.version>2.23.4</mockito.core.version>
+		<stubby4j.version>6.0.1</stubby4j.version>
+
 		<!-- Plugin versions -->
 		<templating.plugin.version>1.0.0</templating.plugin.version>
 	</properties>
@@ -115,10 +120,44 @@
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.nhaarman</groupId>
+			<artifactId>mockito-kotlin</artifactId>
+			<version>${mockito.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.mockito</groupId>
+					<artifactId>mockito-core</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>io.github.azagniotov</groupId>
+			<artifactId>stubby4j</artifactId>
+			<version>${stubby4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>${mockito.core.version}</version>
 			<scope>test</scope>
 		</dependency>
     </dependencies>

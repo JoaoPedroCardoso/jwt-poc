@@ -1,16 +1,8 @@
 package com.poc.spring.security.with.jwt
 
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.context.junit4.SpringRunner
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 
-@RunWith(SpringRunner::class)
-@SpringBootTest
-class ApplicationTests {
-
-	@Test
-	fun contextLoads() {
-	}
-
-}
+@Configuration
+@Import(Application::class)
+open class ApplicationTests

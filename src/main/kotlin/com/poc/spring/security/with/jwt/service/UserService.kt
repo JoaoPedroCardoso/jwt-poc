@@ -9,7 +9,6 @@ import com.poc.spring.security.with.jwt.reposiroty.UserRepository
 import javassist.NotFoundException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.MessageSource
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 
 /**
@@ -73,7 +72,7 @@ class UserService @Autowired constructor(
                 MessageUtils.DEFAULT_LOCALE
             )) }
 
-            userRepository.deleteById(id)
+        userRepository.deleteById(id)
     }
 
 
